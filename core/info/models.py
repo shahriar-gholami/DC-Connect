@@ -1,8 +1,7 @@
 from django.db import models
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
-
-# Create your models here.
+from collections import defaultdict
 
 class Row(models.Model):
     title = models.CharField(max_length=255)
@@ -49,9 +48,7 @@ class Interface(models.Model):
             path_terminals = path.get_terminals()
             if self in path_terminals:
                 pathes.append(path)
-
         return pathes
-
 
     def __str__(self) -> str:
         return f'{self.device}-{self.name}'
@@ -60,13 +57,15 @@ class Link(models.Model):
     terminals = models.ManyToManyField(Interface)
     path_position = models.IntegerField(default=1)
 
+    class Meta:
+        ordering = ['path_position']
+
     def __str__(self) -> str:
         return ' | '.join(str(terminal) for terminal in self.terminals.all())
 
 @receiver(m2m_changed, sender=Link.terminals.through)
 def handle_terminals_change(sender, instance, action, **kwargs):
     if action == 'post_add':
-        # فقط وقتی ترمینال‌ها اضافه شدن
         pathes = []
         for path in Path.objects.all():
             path_terminals = path.get_terminals()
@@ -76,22 +75,18 @@ def handle_terminals_change(sender, instance, action, **kwargs):
                     break
             if len(pathes) == 2:
                 break
-
         if len(pathes) == 0:
-            print('00000000000000000000000000000000000000')
             new_path = Path.objects.create()
             new_path.links.add(instance)
         elif len(pathes) == 1:
-            print('111111111111111111111111111111111')
             pathes[0].links.add(instance)
+            pathes[0].sort_links_by_path_order()
         elif len(pathes) == 2:
-            print('22222222222222222222222222222222')
+            pathes[0].links.add(instance)
             for link in pathes[1].links.all():
                 pathes[0].links.add(link)
+                pathes[0].sort_links_by_path_order()
             pathes[1].delete()
-
-
-
 
 class Path(models.Model):
     links = models.ManyToManyField(Link, blank=True)
@@ -103,7 +98,53 @@ class Path(models.Model):
                 path_terminals.add(terminal)
         return path_terminals
 
-    def __str__(self) -> str:
+    def sort_links_by_path_order(self):
+        # Step 1: Build graph (link adjacency based on shared interfaces)
+        link_to_interfaces = {}
+        interface_to_links = defaultdict(list)
 
+        for link in self.links.all():
+            terminals = list(link.terminals.all())
+            link_to_interfaces[link] = terminals
+            for terminal in terminals:
+                interface_to_links[terminal.id].append(link)
+
+        # Step 2: Build adjacency list for links
+        link_neighbors = defaultdict(set)
+        for link, terminals in link_to_interfaces.items():
+            for terminal in terminals:
+                for neighbor_link in interface_to_links[terminal.id]:
+                    if neighbor_link != link:
+                        link_neighbors[link].add(neighbor_link)
+
+        # Step 3: Find start link (has only one neighbor)
+        start_link = None
+        for link, neighbors in link_neighbors.items():
+            if len(neighbors) == 1:
+                start_link = link
+                break
+
+        visited = set()
+        ordered_links = []
+        current = start_link
+        prev = None
+
+        while current and current not in visited:
+            ordered_links.append(current)
+            visited.add(current)
+            next_links = link_neighbors[current] - visited
+            if prev in next_links:
+                next_links.remove(prev)
+            prev = current
+            current = next_links.pop() if next_links else None
+
+        # Step 5: Update path_position
+        for index, link in enumerate(ordered_links, start=1):
+            link.path_position = index
+            link.save()
+
+        return ordered_links  # Optional: return sorted links
+
+    def __str__(self) -> str:
         return ' || '.join(str(link) for link in self.links.all())
 

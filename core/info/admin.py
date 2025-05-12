@@ -62,7 +62,11 @@ class LinkAdmin(admin.ModelAdmin):
 @admin.register(Path)
 class PathAdmin(admin.ModelAdmin):
     list_display = ('id', 'get_links_count', 'get_terminals_display')
-    filter_horizontal = ('links',)
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        obj = self.get_object(request, object_id)
+        if obj:
+            obj.sort_links_by_path_order()
+        return super().change_view(request, object_id, form_url, extra_context)
 
     def get_links_count(self, obj):
         return obj.links.count()
