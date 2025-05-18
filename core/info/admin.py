@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import *
+from django.contrib import messages
 
 @admin.register(Row)
 class RowAdmin(admin.ModelAdmin):
@@ -19,11 +20,33 @@ class RackAdmin(admin.ModelAdmin):
 class DeviceTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
 
+@admin.action(description='تعریف سری 24 پورتی برای پچ‌پنل')
+def deactivate_products(modeladmin, request, queryset):
+    # updated = queryset.update(is_active=False)
+    if len(queryset) != 2:
+        modeladmin.message_user(
+        request,
+        f"تعداد پچ‌پنل های انتخاب شده باید دو عدد باشد.",
+        messages.ERROR
+        )
+        return
+
+    print(len(queryset))
+    for device in queryset:
+        if device.device_type.title != 'PP':
+            modeladmin.message_user(
+                request,
+                f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
+                messages.ERROR
+            )
+            return
+
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'device_type', 'series', 'rack')
     list_filter = ('device_type', 'rack')
     search_fields = ('name', 'series')
+    actions = [deactivate_products]
 
 
 

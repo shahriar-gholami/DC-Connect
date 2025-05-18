@@ -36,7 +36,7 @@ class Device(models.Model):
     rack = models.ForeignKey(Rack, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self) -> str:
-        return f'{self.rack.row}-{self.rack.name}-{self.device_type}-{self.name}'
+        return f'{self.rack.row}-{self.rack.name}-{self.name}'
 
 class Interface(models.Model):
     name = models.CharField(max_length=255)
