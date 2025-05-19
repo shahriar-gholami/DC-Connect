@@ -20,33 +20,287 @@ class RackAdmin(admin.ModelAdmin):
 class DeviceTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
 
-@admin.action(description='تعریف سری 24 پورتی برای پچ‌پنل')
-def deactivate_products(modeladmin, request, queryset):
+@admin.action(description='تعریف سری 24 پورتی برای پچ‌ پنل')
+def add_24_ports(modeladmin, request, queryset):
     # updated = queryset.update(is_active=False)
-    if len(queryset) != 2:
+    if len(queryset) != 1:
         modeladmin.message_user(
         request,
-        f"تعداد پچ‌پنل های انتخاب شده باید دو عدد باشد.",
+        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
         messages.ERROR
         )
         return
 
     print(len(queryset))
     for device in queryset:
-        if device.device_type.title != 'PP':
+        if device.device_type.title != 'Patch Panel':
             modeladmin.message_user(
                 request,
                 f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
                 messages.ERROR
             )
             return
+    pp = queryset[0]
+    for i in range(1,25):
+        new_int = Interface.objects.create(
+            name = f'{i}',
+            device = pp
+        )
+    modeladmin.message_user(
+                request,
+                f"گروه پورت ۲۴ عددی به پچ‌پنل اضافه شد.",
+                messages.SUCCESS
+            )
+    return
+
+@admin.action(description='تعریف سری 48 پورتی برای پچ‌ پنل')
+def add_48_ports(modeladmin, request, queryset):
+    # updated = queryset.update(is_active=False)
+    if len(queryset) != 1:
+        modeladmin.message_user(
+        request,
+        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
+        messages.ERROR
+        )
+        return
+
+    print(len(queryset))
+    for device in queryset:
+        if device.device_type.title != 'Patch Panel':
+            modeladmin.message_user(
+                request,
+                f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
+                messages.ERROR
+            )
+            return
+    pp = queryset[0]
+    for i in range(1,49):
+        new_int = Interface.objects.create(
+            name = f'{i}',
+            device = pp
+        )
+    modeladmin.message_user(
+                request,
+                f"گروه پورت 48 عددی به پچ‌پنل اضافه شد.",
+                messages.SUCCESS
+            )
+    return
+
+@admin.action(description='تعریف سری پورت 1-12 برای پچ‌ پنل')
+def add_1_12_ports(modeladmin, request, queryset):
+    # updated = queryset.update(is_active=False)
+    if len(queryset) != 1:
+        modeladmin.message_user(
+        request,
+        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
+        messages.ERROR
+        )
+        return
+
+    print(len(queryset))
+    for device in queryset:
+        if device.device_type.title != 'Patch Panel':
+            modeladmin.message_user(
+                request,
+                f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
+                messages.ERROR
+            )
+            return
+    pp = queryset[0]
+    for i in range(1,13):
+        new_int = Interface.objects.create(
+            name = f'{i}',
+            device = pp
+        )
+    modeladmin.message_user(
+                request,
+                f"گروه پورت 12 عددی به پچ‌پنل اضافه شد.",
+                messages.SUCCESS
+            )
+    return
+
+@admin.action(description='تعریف سری پورت 13-24 برای پچ‌ پنل')
+def add_13_24_ports(modeladmin, request, queryset):
+    # updated = queryset.update(is_active=False)
+    if len(queryset) != 1:
+        modeladmin.message_user(
+        request,
+        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
+        messages.ERROR
+        )
+        return
+
+    print(len(queryset))
+    for device in queryset:
+        if device.device_type.title != 'Patch Panel':
+            modeladmin.message_user(
+                request,
+                f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
+                messages.ERROR
+            )
+            return
+    pp = queryset[0]
+    for i in range(13,25):
+        new_int = Interface.objects.create(
+            name = f'{i}',
+            device = pp
+        )
+    modeladmin.message_user(
+                request,
+                f"گروه پورت 12 عددی به پچ‌پنل اضافه شد.",
+                messages.SUCCESS
+            )
+    return
+
+@admin.action(description='تعریف سری پورت 25-36 برای پچ‌ پنل')
+def add_25_36_ports(modeladmin, request, queryset):
+    # updated = queryset.update(is_active=False)
+    if len(queryset) != 1:
+        modeladmin.message_user(
+        request,
+        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
+        messages.ERROR
+        )
+        return
+
+    print(len(queryset))
+    for device in queryset:
+        if device.device_type.title != 'Patch Panel':
+            modeladmin.message_user(
+                request,
+                f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
+                messages.ERROR
+            )
+            return
+    pp = queryset[0]
+    for i in range(25,37):
+        new_int = Interface.objects.create(
+            name = f'{i}',
+            device = pp
+        )
+    modeladmin.message_user(
+                request,
+                f"گروه پورت 12 عددی به پچ‌پنل اضافه شد.",
+                messages.SUCCESS
+            )
+    return
+
+@admin.action(description='تعریف سری پورت 37-48 برای پچ‌ پنل')
+def add_37_48_ports(modeladmin, request, queryset):
+    # updated = queryset.update(is_active=False)
+    if len(queryset) != 1:
+        modeladmin.message_user(
+        request,
+        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
+        messages.ERROR
+        )
+        return
+
+    print(len(queryset))
+    for device in queryset:
+        if device.device_type.title != 'Patch Panel':
+            modeladmin.message_user(
+                request,
+                f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
+                messages.ERROR
+            )
+            return
+    pp = queryset[0]
+    for i in range(37,49):
+        new_int = Interface.objects.create(
+            name = f'{i}',
+            device = pp
+        )
+    modeladmin.message_user(
+                request,
+                f"گروه پورت 12 عددی به پچ‌پنل اضافه شد.",
+                messages.SUCCESS
+            )
+    return
+
+@admin.action(description='تعریف سری پورت 25-48 برای پچ‌ پنل')
+def add_25_48_ports(modeladmin, request, queryset):
+    # updated = queryset.update(is_active=False)
+    if len(queryset) != 1:
+        modeladmin.message_user(
+        request,
+        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
+        messages.ERROR
+        )
+        return
+
+    print(len(queryset))
+    for device in queryset:
+        if device.device_type.title != 'Patch Panel':
+            modeladmin.message_user(
+                request,
+                f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
+                messages.ERROR
+            )
+            return
+    pp = queryset[0]
+    for i in range(25,49):
+        new_int = Interface.objects.create(
+            name = f'{i}',
+            device = pp
+        )
+    modeladmin.message_user(
+                request,
+                f"گروه پورت 24 عددی به پچ‌پنل اضافه شد.",
+                messages.SUCCESS
+            )
+    return
+
+
+@admin.action(description='اتصال نظیر به نظیر پچ پنل‌')
+def pp_connect(modeladmin, request, queryset):
+    # updated = queryset.update(is_active=False)
+    if len(queryset) != 2:
+        modeladmin.message_user(
+        request,
+        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
+        messages.ERROR
+        )
+        return
+
+    for device in queryset:
+        if device.device_type.title != 'Patch Panel':
+            modeladmin.message_user(
+                request,
+                f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
+                messages.ERROR
+            )
+            return
+    pp1 = queryset[0]
+    pp2 = queryset[1]
+    if len(pp1.get_interfaces()) != len(pp2.get_interfaces()):
+        modeladmin.message_user(
+                request,
+                f"تعداد پورت‌های دو تجهیز انتخاب شده یکسان نیست.",
+                messages.ERROR
+            )
+        return
+
+    for j in range(0,len(pp2.get_interfaces())):
+        new_link = Link.objects.create()
+        new_link.terminals.add(pp1.get_interfaces()[j])
+        new_link.terminals.add(pp2.get_interfaces()[j])
+        new_link.save()
+
+    modeladmin.message_user(
+                request,
+                f"پورت‌های پچ پنل‌های انتخاب شده نظیر به نظیر متصل شدند.",
+                messages.SUCCESS
+            )
+    return
+
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'device_type', 'series', 'rack')
     list_filter = ('device_type', 'rack')
     search_fields = ('name', 'series')
-    actions = [deactivate_products]
+    actions = [pp_connect, add_24_ports, add_48_ports, add_1_12_ports, add_13_24_ports, add_25_36_ports, add_37_48_ports, add_25_48_ports]
 
 
 

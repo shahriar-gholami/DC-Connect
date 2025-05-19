@@ -35,6 +35,9 @@ class Device(models.Model):
     series = models.CharField(max_length=255, null=True, blank=True)
     rack = models.ForeignKey(Rack, on_delete=models.SET_NULL, null=True, blank=True)
 
+    def get_interfaces(self):
+        return [int for int in Interface.objects.filter(device = self)]
+
     def __str__(self) -> str:
         return f'{self.rack.row}-{self.rack.name}-{self.name}'
 
