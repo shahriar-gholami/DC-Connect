@@ -1,6 +1,12 @@
 from django.contrib import admin
 from .models import *
 from django.contrib import messages
+from django.utils.html import format_html
+from django.urls import reverse
+
+admin.site.site_header = "DC Connect"  # عنوان بالای صفحه (هدر)
+admin.site.site_title = "DC Connect"       # عنوان تب مرورگر (title tag)
+admin.site.index_title = "DC Connect Management"        # عنوان صفحه اصلی پنل مدیریت
 
 @admin.register(Row)
 class RowAdmin(admin.ModelAdmin):
@@ -294,22 +300,45 @@ def pp_connect(modeladmin, request, queryset):
             )
     return
 
+class InterfaceInline(admin.TabularInline):
+    model = Interface
+    extra = 0
+    can_delete = False
+    show_change_link = False  # چون ما لینک را خودمان تولید می‌کنیم
+    fields = ['interface_link']
+    readonly_fields = ['interface_link']  # جلوگیری از ویرایش
+
+    def interface_link(self, obj):
+        if obj.pk:
+            url = reverse('admin:info_interface_change', args=[obj.pk])
+            return format_html('<a href="{}">{}</a>', url, obj.name)
+        return "-"
+    interface_link.short_description = "Interface"
+
+    def has_add_permission(self, request, obj=None):
+        return False  # جلوگیری از افزودن اینترفیس جدید از این بخش
+
+    def has_change_permission(self, request, obj=None):
+        return False  # جلوگیری از تغییر اینترفیس‌ها
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'device_type', 'series', 'rack')
+    list_display = ('name', 'device_type', 'series', 'rack')
     list_filter = ('device_type', 'rack')
     search_fields = ('name', 'series')
+    inlines = [InterfaceInline]
     actions = [pp_connect, add_24_ports, add_48_ports, add_1_12_ports, add_13_24_ports, add_25_36_ports, add_37_48_ports, add_25_48_ports]
-
 
 
 
 @admin.register(Interface)
 class InterfaceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'device', 'get_rack', 'get_row', 'get_pathes_display')
+    list_display = ('name', 'device', 'get_rack', 'get_row',)
     list_filter = ('device','device__rack', 'device__rack__row')
     search_fields = ('name','device__name')
+    fields = ('name', 'device', 'get_pathes_display')  # ترتیب نمایش فیلدها در صفحه ویرایش
+    readonly_fields = ('get_pathes_display',)
+    autocomplete_fields = ['device']
 
     def get_pathes_display(self, obj):
         pathes = obj.get_pathes()
@@ -318,11 +347,15 @@ class InterfaceAdmin(admin.ModelAdmin):
     get_pathes_display.short_description = "Path"
 
     def get_rack(self, obj):
-        return obj.device.rack
+        if obj.device != None:
+            return obj.device.rack
+        else: return '--'
     get_rack.short_description = 'Rack'
 
     def get_row(self, obj):
-        return obj.device.rack.row if obj.device and obj.device.rack else None
+        if obj.device != None:
+            return obj.device.rack.row if obj.device and obj.device.rack else None
+        else: return '--'
     get_row.short_description = 'Row'
 
 
@@ -338,7 +371,7 @@ class LinkAdmin(admin.ModelAdmin):
 
 @admin.register(Path)
 class PathAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_links_count', 'get_terminals_display')
+    list_display = ('str_display', 'get_links_count')
     def change_view(self, request, object_id, form_url='', extra_context=None):
         obj = self.get_object(request, object_id)
         if obj:
@@ -353,3 +386,7 @@ class PathAdmin(admin.ModelAdmin):
         terminals = obj.get_terminals()
         return ", ".join(str(t) for t in terminals)
     get_terminals_display.short_description = "Terminals"
+
+    def str_display(self, obj):
+        return str(obj)  # همان خروجی __str__
+    str_display.short_description = 'Device'  # عنوان ستون
