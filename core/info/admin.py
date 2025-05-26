@@ -279,7 +279,7 @@ def pp_connect(modeladmin, request, queryset):
             return
     pp1 = queryset[0]
     pp2 = queryset[1]
-    if len(pp1.get_interfaces()) != len(pp2.get_interfaces()):
+    if len(pp1.get_interfaces()) - len(pp2.get_interfaces()):
         modeladmin.message_user(
                 request,
                 f"تعداد پورت‌های دو تجهیز انتخاب شده یکسان نیست.",
@@ -287,7 +287,7 @@ def pp_connect(modeladmin, request, queryset):
             )
         return
 
-    for j in range(0,len(pp2.get_interfaces())):
+    for j in range(0,min(len(pp2.get_interfaces()),len(pp1.get_interfaces()))):
         new_link = Link.objects.create()
         new_link.terminals.add(pp1.get_interfaces()[j])
         new_link.terminals.add(pp2.get_interfaces()[j])
@@ -338,11 +338,19 @@ class InterfaceAdmin(admin.ModelAdmin):
     search_fields = ('name','device__name')
     fields = ('name', 'device', 'get_pathes_display')  # ترتیب نمایش فیلدها در صفحه ویرایش
     readonly_fields = ('get_pathes_display',)
-    autocomplete_fields = ['device']
+    autocomplete_fields = ['device',]
 
     def get_pathes_display(self, obj):
-        pathes = obj.get_pathes()
-        return ", ".join(str(t) for t in pathes)
+        pathes = obj.get_pathes()  # فرض بر این است که این متد لیستی از اشیاء مدل مسیر برمی‌گرداند
+        if len(pathes) == 1:
+            path = pathes[0]
+            app_label = path._meta.app_label
+            model_name = path._meta.model_name
+            url = reverse(f'admin:{app_label}_{model_name}_change', args=[path.pk])
+            return format_html('<a href="{}">{}</a>', url, str(path))
+        return ", ".join(str(p) for p in pathes)
+
+    get_pathes_display.short_description = "Pathes"
 
     get_pathes_display.short_description = "Path"
 
@@ -361,9 +369,10 @@ class InterfaceAdmin(admin.ModelAdmin):
 
 @admin.register(Link)
 class LinkAdmin(admin.ModelAdmin):
-    list_display = ('id', 'path_position', 'get_terminals_display')
+    list_display = ('get_terminals_display', 'path_position', )
     filter_horizontal = ('terminals',)
     search_fields = ('terminals__name', )
+
 
     def get_terminals_display(self, obj):
         return ", ".join(str(t) for t in obj.terminals.all())
@@ -372,6 +381,8 @@ class LinkAdmin(admin.ModelAdmin):
 @admin.register(Path)
 class PathAdmin(admin.ModelAdmin):
     list_display = ('str_display', 'get_links_count')
+    search_fields = ('links',)
+    autocomplete_fields = ('links',)
     def change_view(self, request, object_id, form_url='', extra_context=None):
         obj = self.get_object(request, object_id)
         if obj:
@@ -390,3 +401,11 @@ class PathAdmin(admin.ModelAdmin):
     def str_display(self, obj):
         return str(obj)  # همان خروجی __str__
     str_display.short_description = 'Device'  # عنوان ستون
+
+
+
+
+@admin.register(OuterEndPoint)
+class OuterEndPointAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    filter_horizontal = ['device']

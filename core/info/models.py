@@ -36,7 +36,7 @@ class Device(models.Model):
 	rack = models.ForeignKey(Rack, on_delete=models.SET_NULL, null=True, blank=True)
 
 	def get_interfaces(self):
-		return [int for int in Interface.objects.filter(device = self)]
+		return [int for int in Interface.objects.filter(device = self) if 'Core' not in int.name]
 
 	def __str__(self) -> str:
 		return f'{self.rack.row}-{self.rack.name}-{self.name}'
@@ -49,8 +49,11 @@ class Interface(models.Model):
 		pathes = []
 		for path in Path.objects.all():
 			path_terminals = path.get_terminals()
-			if self in path_terminals:
-				pathes.append(path)
+			if self.id:
+				if self in path_terminals:
+					path.sort_links_by_path_order()
+					pathes.append(path)
+					break
 		return pathes
 
 	class Meta:
@@ -58,7 +61,9 @@ class Interface(models.Model):
 		verbose_name_plural = 'Terminals/Ports'
 
 	def __str__(self) -> str:
-		return f'{self.device}-{self.name}'
+		if self.device != None:
+			return f'{self.device}-{self.name}'
+		return self.name
 
 class Link(models.Model):
 	terminals = models.ManyToManyField(Interface)
@@ -97,6 +102,23 @@ def handle_terminals_change(sender, instance, action, **kwargs):
 
 class Path(models.Model):
 	links = models.ManyToManyField(Link, blank=True)
+
+	def get_devices(self):
+		devices = set()
+		path_terminals = set()
+		for link in self.links.all():
+			for terminal in link.terminals.all():
+				path_terminals.add(terminal)
+		for int in list(path_terminals):
+			devices.add(int.device)
+		return list(devices)
+
+	def get_outer_device(self):
+		endpoints = []
+		for device in self.get_devices():
+			if OuterEndPoint.objects.filter(device=device).first() != None:
+				endpoints.append(f'{device}-{OuterEndPoint.objects.filter(device=device).first().name}')
+		return endpoints
 
 	def get_terminals(self):
 		path_terminals = set()
@@ -153,5 +175,13 @@ class Path(models.Model):
 		return ordered_links  # Optional: return sorted links
 
 	def __str__(self) -> str:
-		return ' || '.join(str(link) for link in self.links.all())
+		if self.get_outer_device() != []:
+			return f"{' || '.join(str(link) for link in self.links.all())} -->{self.get_outer_device()}"
+		return f"{' || '.join(str(link) for link in self.links.all())}"
+		
+class OuterEndPoint(models.Model):
+	name = models.CharField(max_length=250)
+	device = models.ManyToManyField(Device,null=True, blank=True)
 
+	def __str__(self) -> str:
+		return self.name
