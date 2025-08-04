@@ -39,7 +39,7 @@ def add_24_ports(modeladmin, request, queryset):
 
     print(len(queryset))
     for device in queryset:
-        if device.device_type.title != 'Patch Panel':
+        if device.device_type.title != 'PP':
             modeladmin.message_user(
                 request,
                 f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
@@ -62,29 +62,29 @@ def add_24_ports(modeladmin, request, queryset):
 @admin.action(description='تعریف سری 48 پورتی برای پچ‌ پنل')
 def add_48_ports(modeladmin, request, queryset):
     # updated = queryset.update(is_active=False)
-    if len(queryset) != 1:
-        modeladmin.message_user(
-        request,
-        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
-        messages.ERROR
-        )
-        return
+    # if len(queryset) != 1:
+    #     modeladmin.message_user(
+    #     request,
+    #     f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
+    #     messages.ERROR
+    #     )
+    #     return
 
-    print(len(queryset))
+    # print(len(queryset))
     for device in queryset:
-        if device.device_type.title != 'Patch Panel':
+        if device.device_type.title != 'PP':
             modeladmin.message_user(
                 request,
                 f"تجهیز انتخاب شده از نوع پچ‌پنل نیست.",
                 messages.ERROR
             )
             return
-    pp = queryset[0]
-    for i in range(1,49):
-        new_int = Interface.objects.create(
-            name = f'{i}',
-            device = pp
-        )
+        
+        for i in range(1,49):
+            new_int = Interface.objects.create(
+                name = f'{i}',
+                device = device
+            )
     modeladmin.message_user(
                 request,
                 f"گروه پورت 48 عددی به پچ‌پنل اضافه شد.",
@@ -264,7 +264,7 @@ def pp_connect(modeladmin, request, queryset):
     if len(queryset) != 2:
         modeladmin.message_user(
         request,
-        f"تعداد پچ‌پنل های انتخاب شده باید یک عدد باشد.",
+        f"تعداد پچ‌پنل های انتخاب شده باید دو عدد باشد.",
         messages.ERROR
         )
         return
@@ -323,9 +323,9 @@ class InterfaceInline(admin.TabularInline):
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'device_type', 'series', 'rack')
+    list_display = ('name', 'device_type', 'rack')
     list_filter = ('device_type', 'rack')
-    search_fields = ('name', 'series')
+    search_fields = ('name',)
     inlines = [InterfaceInline]
     actions = [pp_connect, add_24_ports, add_48_ports, add_1_12_ports, add_13_24_ports, add_25_36_ports, add_37_48_ports, add_25_48_ports]
 

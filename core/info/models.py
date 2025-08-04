@@ -32,7 +32,6 @@ class DeviceType(models.Model):
 class Device(models.Model):
 	name = models.CharField(max_length=255)
 	device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
-	series = models.CharField(max_length=255, null=True, blank=True)
 	rack = models.ForeignKey(Rack, on_delete=models.SET_NULL, null=True, blank=True)
 
 	def get_interfaces(self):
