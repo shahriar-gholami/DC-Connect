@@ -1,0 +1,159 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../../assets/" data-template="horizontal-menu-template-no-customizer-starter">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    {% block meta %} {% endblock %}
+
+    <meta name="description" content="">
+
+    <link rel="icon" type="image/x-icon" href="{% static 'assets\img\branding\test_logo.png' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}">
+    <!-- <link rel="stylesheet" href="../../assets/vendor/fonts/fontawesome.css" /> -->
+    <!-- <link rel="stylesheet" href="../../assets/vendor/fonts/flag-icons.css" /> -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/core.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/rtl.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/flag-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/core.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/flatpickr/flatpickr.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/rtl.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/flatpickr/flatpickr.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/jquery-timepicker/jquery-timepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/pickr/pickr-themes.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/swiper/swiper.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/pages/ui-carousel.css' %}">
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+    <script src="{% static 'assets/js/config.js' %}"></script>
+
+    <title>DC Connect</title>
+    
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
+      <div class="layout-container">
+        <!-- Navbar -->
+
+        <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
+          <div class="container-xxl">
+            <div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
+              <a href="{% url 'info:index' %}" class="app-brand-link gap-2">
+                
+                <img  class="br-10" src="{% static 'assets\img\logo.png' %}" alt="" height="55px">
+              </a>
+
+              <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-xl-none">
+                <i class="bx bx-x bx-sm align-middle"></i>
+              </a>
+            </div>
+
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav align-items-center">
+              <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
+                <i class="bx bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center navbar-nav flex-row align-items-center ms-auto" id="navbar-collapse">
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- User -->
+                  <a class="nav-link dropdown-toggle hide-arrow nav-item navbar-dropdown dropdown-user dropdown" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <a class="btn btn-danger text-white" href="{% url 'admin:index' %}">مدیریت مسیرها</a>
+                  </a>
+                  
+                <!--/ User -->
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <!-- / Navbar -->
+
+        <div class="layout-page">
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Menu -->
+            
+            <div class="container-xxl flex-grow-1 container-p-y">
+                {% block content %}
+
+                {% endblock %}
+            </div>
+          </div>
+        </div>
+
+        <!--/ Layout container -->
+      </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+
+    <div class="drag-target"></div>
+    <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'assets/js/table-data.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/moment/moment.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/jdate/jdate.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/flatpickr/flatpickr-jdate.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/flatpickr/l10n/fa-jdate.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/jquery-timepicker/jquery-timepicker.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/pickr/pickr.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script src="{% static 'assets/js/forms-pickers.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/swiper/swiper.js' %}"></script>
+    <script src="{% static 'assets/js/ui-carousel.js' %}"></script>
+    
+  </body>
+</html>

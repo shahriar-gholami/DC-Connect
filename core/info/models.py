@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from collections import defaultdict
+from khayyam import JalaliDatetime
+
 
 class Row(models.Model):
 	title = models.CharField(max_length=255)
@@ -184,3 +186,20 @@ class OuterEndPoint(models.Model):
 
 	def __str__(self) -> str:
 		return self.name
+
+class Route(models.Model):
+	route = models.TextField(max_length=1000)
+	created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+	updated = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+	@property
+	def register_date(self):
+		return JalaliDatetime(self.created).strftime('%Y/%m/%d')
+
+	@property
+	def update_date(self):
+		return JalaliDatetime(self.updated).strftime('%Y/%m/%d')
+
+	def __str__(self) -> str:
+		return self.route
+

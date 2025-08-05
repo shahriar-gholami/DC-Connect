@@ -409,3 +409,8 @@ class PathAdmin(admin.ModelAdmin):
 class OuterEndPointAdmin(admin.ModelAdmin):
     list_display = ['name']
     filter_horizontal = ['device']
+
+@admin.register(Route)
+class RouteAdmin(admin.ModelAdmin):
+    list_display = ['route']
+    search_fields = ['route']

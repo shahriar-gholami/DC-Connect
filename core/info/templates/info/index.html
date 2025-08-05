@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block meta %}
+<meta charset="UTF-8">
+<meta content='width=device-width, initial-scale=1.0, user-scalable=0' name='viewport'>
+<meta content="IE=edge" http-equiv="X-UA-Compatible">
+<meta name="description" content="{{ store.meta_description }}">
+<meta content="PicoSite" name="author">
+<meta name="keywords" content="{{store.meta_keywords}}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{store.get_canonical}}">
+
+<!-- Open Graph tags -->
+<meta property="og:title" content="{{store.meta_og_title}}">
+<meta property="og:description" content="{{meta_og_description}}">
+<meta property="og:image" content="{{store.get_logo_image}}" rel="shortcut icon" type="image/x-icon">
+<meta property="og:url" content="{{store.get_canonical}}">
+<meta property="og:type" content="website">
+
+<!-- Twitter Card tags -->
+<meta name="twitter:card" content="Summary Card with Large Image">
+<meta name="twitter:title" content="{{store.meta_tc_title}}">
+<meta name="twitter:description" content="{{store.meta_tc_description}}">
+<meta name="twitter:image" content="{{store.get_logo_image}}">
+{% endblock %}
+
+{% block title %}ارتباطات{% endblock %}
+{% block content %}
+
+
+        
+            <div class="card mt-5">
+                <div class="card-header header-elements">
+                    <span class="me-2">لیست ارتباطات</span>
+
+                    <div class="card-header-elements ms-auto">
+                      <a type="button" class="btn btn-s btn-primary" href="{% url 'admin:info_route_add' %}">
+                        <span class=" bx-xs me-1"></span>ثبت ارتباطات جدید
+                      </a>
+                    </div>
+                  </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-nowrap border-bottom"
+                                id="responsive-datatable">
+                            <thead>
+                            <tr class="border-top">
+                                <th>تاریخ بروزرسانی</th>
+                                <th>مسیرها</th>
+                                <th>عملیات</th>
+                                
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for route in routes %}
+                                    <tr>
+                                        <td class="align-middle">{{route.update_date}}</td>
+                                        <td class="align-middle">{{route.route}}</td>
+                                        <td class="align-middle" class="align-middle">
+                                            <a href="{% url 'admin:info_route_change' route.id %}" class="btn btn-icon btn-success">
+                                                <span class="tf-icons bx bx-edit"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+                  
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'assets/js/forms-pickers.js' %}"></script>
+{% endblock %}

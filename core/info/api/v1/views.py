@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
 from ...models import *
+from rest_framework import mixins, generics
+from .serializers import RouteSerializer
 
 class CreateNewLinkAPIView(APIView):
     def post(self, request):
@@ -63,9 +65,14 @@ class CreateNewLinkAPIView(APIView):
             return Response({"message": "اطلاعات با موفقیت دریافت شد."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class RouteCreateAPIView(mixins.CreateModelMixin,
+                         generics.GenericAPIView):
+    queryset = Route.objects.all()
+    serializer_class = RouteSerializer
 
-
-                                                                                                                                                                                                                                     
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+                                                                                                                                                                                                                        
 
 
 
